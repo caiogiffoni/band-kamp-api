@@ -3,7 +3,7 @@ name: band_CI
 on:
 
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
