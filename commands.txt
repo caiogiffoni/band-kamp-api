@@ -1,0 +1,154 @@
+"""
+python -m venv venv --upgrade-deps
+source venv/bin/activate
+pip install django djangorestframework black ipython ipdb python-dotenv
+pip install psycopg2-binary (postgres)
+pip freeze > requirements.txt
+pip install -r requirements.txt     -- ler
+django-admin startproject hello_django .
+python manage.py startapp kontent
+    go to /settings -> installed_apps e adc
+    "kontent",
+
+python manage.py runserver
+python manage.py makemigrations
+python manage.py migrate
+sqlite3 db.sqlite3 -header -column
+python manage.py shell
+
+pip install djangorestframeword
+    go to /settings -> installed_apps e adc
+    "rest_framework",
+
+add endpoints: on app/view.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class HelloView(APIView):
+    def get(self, request):
+        return Response('Hello Kenzie')
+
+create on app dir urls.py w:
+    from django.urls import path, 
+    from . import views
+
+    urlpatterns = [
+        path('hello/', views.HelloView.as_view())
+    ]
+
+no return não esquecer de colocar model_to_dict e importar from django.forms.models import model_to_dict
+
+depois da implementacao do serializerm i model_to_dict fica inutilizado.
+
+----
+
+model user de abstract user
+lembrar de no fim do setting colocar
+AUTH_USER_MODEL = "accounts.User"
+
+    "rest_framework.authtoken",
+
+
+
+"""
+para add paginacão usando generic view no add
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 2,
+
+no REST_FRAMEWORK em setting.py
+
+---
+
+documentação
+
+pip install drf-spectacular
+colocar no installed apps
+add rest framework no setting.py
+->  'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+add setting.py
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+
+----
+dump DEFAULT_SCHEMA_CLASS
+python manage.py dumpdata books.Book -o fixture.json
+
+python manage.py loaddata fixture.json
+
+---
+
+coverage
+add file coveragerc
+
+*
+[run]
+source = .
+omit = 
+    venv/*
+    project_base/*
+    manage.py
+    # Ignora diretorios que comecem com tests
+    *tests*
+    # Ignora o diretorio de migrations
+    *migrations*
+    # Ignora arquivos que comecem com _
+    *_*
+*
+
+[report]
+show_missing = True
+
+
+
+install add file .coveragerc
+coverage run ./manage.py test
+
+coverage html
+
+
+---- 
+docker
+
+ 1987  docker ps -a
+ 1988  docker image ps
+ 1989  docker image ls
+ 1990  docker image ls -aq
+ 1991  docker image rm $(docker image ls -aq)
+ 1992  docker image ls -aq
+ 1993  docker ps -a
+ 1994  docker image rm $(docker image ls -aq)
+ 1995  docker ps 
+ 1996  docker container rm $(docker container ls -aq)
+ 1997  docker container ls
+ 1998  docker ps
+ 1999  docker ps -a
+ 2000  docker image rm $(docker image ls -aq)
+
+
+ docker help
+ Aqui existem alguns pontos importantes:
+
+image - aqui definimos qual imagem utilizaremos
+env_file - definição do caminho para as variáveis de ambiente
+ports - mapeamento da porta do serviço com a porta da máquina
+volumes - os volumes fornecem a capacidade de conectar caminhos específicos do sistema de arquivos do contêiner de volta à máquina host.
+volumes nomeados - o Docker mantém a localização física no disco e indicamos apenas um nome para o volume, nesse caso, nosso banco de dados será salvo em nosso contêiner no caminho /var/lib/postgresql/data
+volumes de ligação - aqui controlamos o ponto de montagem exato no host, ou seja, faz uma ponte de ligação do host com o contêiner, ou seja, todas as alterações que fizermos no host, serão refletidas no contêiner imediatamente.
+migration - aqui estamos definindo um serviço para executar as migrations para nós, para não precisarmos entrar no contêiner manualmente para fazer essa operação.
+build - caminho onde está o Dockerfile para fazer o build
+command - opcional, podemos passar um comando para inicialização
+O PostgreSQL demora um certo tempo para aceitar conexões, e isso é independente do tempo de montagem do container. Portanto, se não houver nenhuma trava, o comando de execução de migrations pode ser rodado antes do banco estar pronto para aceitar conexões. Esse script de bash serve justamente para fazer essa trava.
+depends_on - lista dos serviços que este serviço depende para iniciar, apenas depende que o contêiner seja montado, não que ele esteja pronto.
+stdin_open - equivalente a docker run -i, para abrir o contêiner em modo interativo
+tty - equivalente a docker run -t, para conectar nosso terminal com o contêiner
+
+
+
+docker exec -it nome_do_container bash
+
